@@ -133,7 +133,7 @@ async function downloadAll(){let b=$('#downloadAllBtn');b.disabled=true;b.textCo
 function getHistory(){try{return JSON.parse(localStorage.getItem('project-erp-history')||'[]')}catch{return []}}
 function addHistory(entry){const rows=[{...entry,at:new Date().toISOString()},...getHistory()].slice(0,20);localStorage.setItem('project-erp-history',JSON.stringify(rows));}
 function renderHistory(){const rows=getHistory(),host=$('#historyList');host.innerHTML=rows.length?rows.map(row=>`<div class="history-row"><div><strong>${row.products} validated product${row.products===1?'':'s'}</strong><small>Output prepared for ${row.brands} brand${row.brands===1?'':'s'}</small></div><div><strong>${new Date(row.at).toLocaleDateString()}</strong><small>${new Date(row.at).toLocaleTimeString()}</small></div><div><strong>Local session</strong><small>Source files were not retained</small></div></div>`).join(''):'<p class="empty-message">No processing activity has been recorded in this browser yet.</p>'}
-function route(name){document.querySelectorAll('#process,.route').forEach(section=>section.classList.add('hidden'));$('#'+name).classList.remove('hidden');document.querySelectorAll('.nav-link').forEach(link=>link.classList.toggle('active',link.dataset.route===name));if(name==='history')renderHistory()}
+function route(name){document.querySelectorAll('#process,.route').forEach(section=>section.classList.add('hidden'));const target=$('#'+name);target.classList.remove('hidden','route-enter');requestAnimationFrame(()=>target.classList.add('route-enter'));document.querySelectorAll('.nav-link').forEach(link=>link.classList.toggle('active',link.dataset.route===name));if(name==='history')renderHistory()}
 
 renderInputs();
 $('#continueBtn').addEventListener('click',configure);
