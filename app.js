@@ -153,3 +153,7 @@ $('#generate-button').addEventListener('click', async () => {
 });
 
 lucide.createIcons();
+const citrusNote = document.querySelector('.sidebar-note');
+if (citrusNote && !citrusNote.querySelector('.citrus-art')) {
+  const citrus = new Image(); citrus.className = 'citrus-art'; citrus.alt = 'Orange and fresh green leaves'; citrus.src = 'assets/citrus-corner.png'; citrus.style.cssText = 'position:absolute;left:-24px;bottom:-88px;width:310px;max-width:none;mix-blend-mode:screen;opacity:.94;pointer-events:none;z-index:0;'; citrusNote.prepend(citrus);
+}
