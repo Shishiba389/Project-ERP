@@ -32,11 +32,12 @@ $$('[data-command]').forEach((button) => button.addEventListener('click', () => 
 const savedTheme = localStorage.getItem('erp-theme') || 'light';
 document.body.dataset.theme = savedTheme;
 function syncThemeToggle() {
+  if (!$('#theme-toggle')) return;
   const dark = document.body.dataset.theme === 'dark';
   $('#theme-toggle').innerHTML = `<i data-lucide="${dark ? 'moon-star' : 'sun-medium'}"></i><span>${dark ? 'Dark deck' : 'Light studio'}</span>`;
   lucide.createIcons();
 }
-$('#theme-toggle').addEventListener('click', () => { document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark'; localStorage.setItem('erp-theme', document.body.dataset.theme); syncThemeToggle(); });
+if ($('#theme-toggle')) $('#theme-toggle').addEventListener('click', () => { document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark'; localStorage.setItem('erp-theme', document.body.dataset.theme); syncThemeToggle(); });
 $('#stage-export').addEventListener('click', () => $('#export-dialog').showModal());
 $('.output-core').addEventListener('click', () => $('#export-dialog').showModal());
 syncThemeToggle();
@@ -93,13 +94,13 @@ function renderProducts() {
   target.innerHTML = items.map((product, index) => `<tr><td class="row-signal"></td><td><strong>${escapeXml(product.name)}</strong></td><td class="mono">${escapeXml(product.ean)}</td><td>${escapeXml(product.brand)}</td><td><span class="status active">${escapeXml(product.status)}</span></td><td><span class="mono">READY</span></td><td><button class="icon-button" aria-label="Inspect ${escapeXml(product.name)}"><i data-lucide="ellipsis"></i></button></td></tr>`).join(''); lucide.createIcons();
 }
 function renderDashboard() {
-  $('#brand-count').textContent = state.brands.size; $('#product-count').textContent = state.products.length; $('#excluded-count').textContent = state.excluded.length;
+  if ($('#brand-count')) $('#brand-count').textContent = state.brands.size; if ($('#product-count')) $('#product-count').textContent = state.products.length; if ($('#excluded-count')) $('#excluded-count').textContent = state.excluded.length;
   if (!$('#batch-preview')) return;
   $('#batch-preview').innerHTML = [...state.brands.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([brand, products]) => `<button class="batch-tile" data-batch="${escapeXml(brand)}"><strong>${escapeXml(brand)}</strong><span>${products.length} PRODUCTS · READY</span></button>`).join('');
   $$('#batch-preview [data-batch]').forEach((button) => button.addEventListener('click', () => { $('#export-dialog').showModal(); $('input[name="mode"][value="choose"]').checked = true; $('#brand-selector').hidden = false; $$('#brand-selector input').forEach((input) => { input.checked = input.value === button.dataset.batch; }); }));
 }
 function renderAnalytics() { if (!$('#brand-bars')) return; $('#brand-bars').innerHTML = [...state.brands.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([brand, items]) => `<div class="bar-row"><span>${escapeXml(brand)}</span><div class="bar"><i style="width:${Math.max(12, Math.round(items.length / state.products.length * 100))}%"></i></div><strong>${items.length}</strong></div>`).join(''); }
-$('#product-search').addEventListener('input', (event) => { const term = normalize(event.target.value); $$('#products-table tr').forEach((row) => { row.hidden = Boolean(term) && !normalize(row.textContent).includes(term); }); });
+if ($('#product-search')) $('#product-search').addEventListener('input', (event) => { const term = normalize(event.target.value); $$('#products-table tr').forEach((row) => { row.hidden = Boolean(term) && !normalize(row.textContent).includes(term); }); });
 
 function getSheetPath(zip, sheetName) {
   const parser = new DOMParser(); const workbook = parser.parseFromString(zip.file('xl/workbook.xml').async('string'), 'application/xml');
