@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project ERP — Data Processing</title>
+  <title>Project ERP - Data Processing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,23 +14,27 @@
     <aside class="sidebar">
       <div class="brand"><span class="brand-mark">E</span><span><strong>Project</strong><b> ERP</b><small>Packaging operations</small></span></div>
       <nav aria-label="Main navigation">
-        <a class="active" href="#process"><span>▤</span> Data processing</a>
-        <a href="#history"><span>◷</span> History</a>
-        <a href="#templates"><span>▧</span> Templates</a>
-        <a href="#settings"><span>⚙</span> Settings</a>
+        <a class="active" href="#process"><span>Data</span> Data processing</a>
+        <a href="#history"><span>Log</span> History</a>
+        <a href="#templates"><span>File</span> Templates</a>
+        <a href="#settings"><span>Set</span> Settings</a>
       </nav>
-      <div class="sidebar-note"><div class="citrus" aria-hidden="true"></div><strong>Clean data.<br>Brighter decisions.</strong><small>Process · Validate · Export</small></div>
+      <div class="sidebar-note"><div class="citrus" aria-hidden="true"></div><strong>Clean data.<br>Brighter decisions.</strong><small>Process &middot; Validate &middot; Export</small></div>
     </aside>
     <main>
-      <header class="topbar"><div class="search">⌕ <span>Search files, datasets, or processes...</span><kbd>⌘ K</kbd></div><div class="top-actions"><button aria-label="Notifications">♧</button><div class="avatar">JD</div><div class="profile"><strong>Jane Doe</strong><small>Product Team</small></div><span>⌄</span></div></header>
+      <header class="topbar"><div class="search">Search <span>Search files, datasets, or processes...</span><kbd>Ctrl K</kbd></div><div class="top-actions"><button aria-label="Notifications">Alert</button><div class="avatar">JD</div><div class="profile"><strong>Jane Doe</strong><small>Product Team</small></div></div></header>
       <section id="process" class="content">
         <div class="eyebrow">DATA PROCESSING <i></i></div>
         <div class="heading-row"><div><h1>Process your data</h1><p>Match Matas assortment with master data, remove discontinued products, and generate brand-ready Kopia files.</p></div><div class="scribble">Good data<br><em>brighter tomorrow</em><u></u></div></div>
-        <div class="steps" aria-label="Processing steps"><div class="step current"><b>1</b><strong>Upload files</strong><small>Add your Excel files</small></div><div class="line"></div><div class="step"><b>2</b><strong>Configure</strong><small>Choose processing mode</small></div><div class="line"></div><div class="step"><b>3</b><strong>Process</strong><small>Validate and group brands</small></div><div class="line"></div><div class="step"><b>4</b><strong>Review & download</strong><small>Get your Kopia files</small></div></div>
-        <div class="panel"><div class="panel-head"><div><h2>Upload your source files</h2><p>Drop the three files required for a complete export.</p></div><button class="ghost">ⓘ File requirements</button></div><div class="upload-grid" id="uploadGrid"></div><div class="tip"><span>♢</span><p><strong>Pro tip:</strong> Keep the Kopia template unchanged. Only columns A, B, and D will be populated in the output.</p><button class="ghost">Download templates&nbsp; ↧</button></div><div class="footer-actions"><button class="cancel">Cancel</button><button class="primary" id="continueBtn" disabled>Continue to configure&nbsp; →</button></div></div>
+        <div class="steps" aria-label="Processing steps"><div class="step current" data-step="1"><b>1</b><strong>Upload files</strong><small>Add your Excel files</small></div><div class="line"></div><div class="step" data-step="2"><b>2</b><strong>Configure</strong><small>Choose processing mode</small></div><div class="line"></div><div class="step" data-step="3"><b>3</b><strong>Process</strong><small>Validate and group brands</small></div><div class="line"></div><div class="step" data-step="4"><b>4</b><strong>Review &amp; download</strong><small>Get your Kopia files</small></div></div>
+        <div class="panel view" id="uploadView"><div class="panel-head"><div><h2>Upload your source files</h2><p>Drop the three files required for a complete export. Files stay on this device.</p></div><button class="ghost" id="requirementsBtn">File requirements</button></div><div class="upload-grid" id="uploadGrid"></div><div class="tip"><span>i</span><p><strong>Pro tip:</strong> The export is cloned directly from the selected Kopia file. Only columns A, B, and D are written.</p></div><div class="footer-actions"><button class="cancel" id="resetBtn">Clear files</button><button class="primary" id="continueBtn" disabled>Continue to configure &rarr;</button></div></div>
+        <div class="panel view hidden" id="configureView"><div class="panel-head"><div><h2>Configure export</h2><p>Select how Project ERP should prepare Kopia files.</p></div><button class="ghost back">&larr; Back to files</button></div><div class="mode-grid"><label class="mode"><input type="radio" name="mode" value="auto" checked><b>Automatic grouping</b><span>Create one file for every brand found in the validated Matas assortment.</span></label><label class="mode"><input type="radio" name="mode" value="manual"><b>Choose brands manually</b><span>Select exactly the brands to include in this export.</span></label></div><div class="validation-summary" id="validationSummary"></div><section class="brand-picker hidden" id="brandPicker"><div class="section-label">AVAILABLE BRANDS</div><div id="brandList" class="brand-list"></div></section><div class="footer-actions"><button class="cancel back">Back</button><button class="primary" id="processBtn">Validate &amp; prepare export &rarr;</button></div></div>
+        <div class="panel view hidden" id="resultView"><div class="panel-head"><div><h2>Export ready</h2><p id="resultIntro">Your validated products are ready.</p></div><button class="ghost back-config">&larr; Edit configuration</button></div><div class="result-stats" id="resultStats"></div><div class="result-table-wrap"><table><thead><tr><th>Brand</th><th>Products ready</th><th>Discontinued</th><th>Unmatched EAN</th><th>Output</th></tr></thead><tbody id="resultRows"></tbody></table></div><div class="tip warning hidden" id="warningBox"></div><div class="footer-actions"><button class="cancel back-config">Back</button><button class="primary" id="downloadAllBtn">Download all Kopia files</button></div></div>
       </section>
     </main>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
