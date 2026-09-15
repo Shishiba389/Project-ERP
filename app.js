@@ -100,7 +100,12 @@ async function resolveSheetPart(zip, sheetName) {
   return target.startsWith('xl/') ? target : `xl/${target.replace(/^\.\//, '')}`;
 }
 function cellStyle(existing) { return existing?.match(/\ss="[^"]*"/)?.[0] || ''; }
-function cell(reference, value, existing) { if (value === null) return existing ? `<c r="${reference}"${cellStyle(existing)}/>` : ''; return `<c r="${reference}"${cellStyle(existing)} t="inlineStr"><is><t>${escapeXml(value)}</t></is></c>`; }
+function cell(reference, value, existing) {
+  if (value === null) return existing ? `<c r="${reference}"${cellStyle(existing)}/>` : '';
+  // Keep indexes and standard numeric EANs as numeric Excel values. This matches the Kopia data columns while still protecting non-numeric identifiers.
+  if ((reference.startsWith('A') || reference.startsWith('B')) && /^\d{1,15}$/.test(String(value))) return `<c r="${reference}"${cellStyle(existing)}><v>${value}</v></c>`;
+  return `<c r="${reference}"${cellStyle(existing)} t="inlineStr"><is><t>${escapeXml(value)}</t></is></c>`;
+}
 function replaceCell(row, reference, value) {
   const matcher = new RegExp(`<c\\b[^>]*\\br="${reference}"[^>]*(?:/>|>[\\s\\S]*?<\\/c>)`, 'i'); const existing = row.match(matcher)?.[0]; const replacement = cell(reference, value, existing);
   if (existing) return row.replace(matcher, replacement);
